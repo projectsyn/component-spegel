@@ -5,15 +5,119 @@ The parent key for all of the following parameters is `spegel`.
 == `namespace`
 
 [horizontal]
+type:: dictionary
+default:: https://github.com/projectsyn/component-spegel/blob/master/class/defaults.yml[See `class/defaults.yml`]
+
+Configures the namespace in which to deploy this component.
+
+=== `namespace.name`
+
+[horizontal]
 type:: string
 default:: `syn-spegel`
 
-The namespace in which to deploy this component.
+The namespace name.
 
+=== `namespace.labels`
+
+[horizontal]
+type:: dictionary
+default:: `{}`
+
+Labels applied to the namespace.
+
+IMPORTANT: The Spegel DaemonSet mounts the node's containerd socket and registry configuration directory via `hostPath` volumes, which the `baseline` Pod Security Standard forbids.
+On clusters that enforce https://kubernetes.io/docs/concepts/security/pod-security-standards/[Pod Security Standards], set `pod-security.kubernetes.io/enforce: privileged` here or label the namespace externally, otherwise the pods will be rejected by the admission webhook.
+
+[source,yaml]
+----
+parameters:
+  spegel:
+    namespace:
+      labels:
+        pod-security.kubernetes.io/enforce: privileged
+----
+
+=== `namespace.annotations`
+
+[horizontal]
+type:: dictionary
+default:: `{}`
+
+Annotations applied to the namespace.
+
+== `charts`
+
+[horizontal]
+type:: dictionary
+default:: https://github.com/projectsyn/component-spegel/blob/master/class/defaults.yml[See `class/defaults.yml`]
+
+The Helm chart source and version for Spegel.
+The chart is pulled from the OCI registry `oci://ghcr.io/spegel-org/helm-charts/spegel`.
+
+== `mirrored_registries`
+
+[horizontal]
+type:: list
+default:: `[]`
+
+Registries for which Spegel creates mirror configuration on the nodes.
+An empty list means all registries are mirrored.
+
+[source,yaml]
+----
+parameters:
+  spegel:
+    mirrored_registries:
+      - https://docker.io
+      - https://ghcr.io
+----
+
+== `registry_filters`
+
+[horizontal]
+type:: list
+default:: `[]`
+
+Regular expressions to filter out tags or registries from being resolved through the mirror.
+An empty list means all registries and tags are resolved.
+
+[source,yaml]
+----
+parameters:
+  spegel:
+    registry_filters:
+      - ".*:latest$"
+      - "^docker\\.io/"
+----
+
+== `helm_values`
+
+[horizontal]
+type:: dictionary
+default:: https://github.com/projectsyn/component-spegel/blob/master/class/defaults.yml[See `class/defaults.yml`]
+
+Values passed to the https://github.com/spegel-org/spegel/tree/main/charts/spegel[Spegel Helm chart].
+See the chart's https://github.com/spegel-org/spegel/blob/main/charts/spegel/values.yaml[`values.yaml`] for all available options.
+
+NOTE: The chart's post-delete cleanup hook isn't rendered by the component, since Helm hooks aren't supported when deploying through Argo CD.
+When removing the component from a cluster, the containerd mirror configuration is left behind on the nodes.
+
+Make sure `spegel.containerdRegistryConfigPath` matches the containerd registry config path of the cluster's distribution.
+See the https://spegel.dev/docs/getting-started/#compatibility[Spegel compatibility documentation] for distribution-specific instructions.
 
 == Example
 
 [source,yaml]
 ----
-namespace: example-namespace
+parameters:
+  spegel:
+    namespace:
+      labels:
+        pod-security.kubernetes.io/enforce: privileged
+    helm_values:
+      spegel:
+        containerdRegistryConfigPath: /etc/cri/conf.d/hosts
+      serviceMonitor:
+        enabled: true
 ----

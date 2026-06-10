@@ -2,4 +2,24 @@ parameters:
   spegel:
     =_metadata:
       multi_tenant: true
-    namespace: syn-spegel
+    namespace:
+      name: syn-spegel
+      labels: {}
+      annotations: {}
+
+    charts:
+      spegel:
+        source: oci://ghcr.io/spegel-org/helm-charts/spegel
+        version: 0.7.1
+
+    # Registries for which mirror configuration is created.
+    # Empty means all registries are mirrored.
+    mirrored_registries: []
+    # Regular expressions to filter out tags/registries.
+    # Empty means all registries/tags are resolved.
+    registry_filters: []
+
+    helm_values:
+      spegel:
+        mirroredRegistries: ${spegel:mirrored_registries}
+        registryFilters: ${spegel:registry_filters}

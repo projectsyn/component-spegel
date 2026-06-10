@@ -1,5 +1,15 @@
 = Spegel
 
-spegel is a Commodore component to manage Spegel.
+spegel is a Commodore component to manage https://spegel.dev[Spegel], a stateless cluster-local OCI registry mirror.
+Spegel runs as a DaemonSet and lets nodes pull container images directly from each other, reducing external registry traffic and speeding up image pulls.
+
+The component deploys Spegel via its https://github.com/spegel-org/spegel/tree/main/charts/spegel[Helm chart].
+
+== Prerequisites
+
+Spegel relies on containerd registry mirroring and requires a correctly configured containerd on the cluster nodes.
+The containerd registry config path must be set, and discarding unpacked layers must be disabled.
+Some Kubernetes distributions come with this configuration out of the box, while others require additional configuration or aren't supported at all.
+See the https://spegel.dev/docs/getting-started/#compatibility[Spegel compatibility documentation] for distribution-specific instructions.
 
 See the xref:references/parameters.adoc[parameters] reference for further details.
