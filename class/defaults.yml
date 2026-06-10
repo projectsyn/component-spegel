@@ -1,0 +1,5 @@
+parameters:
+  spegel:
+    =_metadata:
+      multi_tenant: true
+    namespace: syn-spegel
