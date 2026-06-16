@@ -7,4 +7,10 @@ local params = inv.parameters.spegel;
 
 // Define outputs below
 {
+  '00_namespace': kube.Namespace(params.namespace.name) {
+    metadata+: {
+      annotations+: params.namespace.annotations,
+      labels+: params.namespace.labels,
+    },
+  },
 }

@@ -1,6 +1,6 @@
 # Commodore Component: Spegel
 
-This is a [Commodore][commodore] Component for Spegel.
+This is a [Commodore][commodore] Component for [Spegel](https://spegel.dev), a stateless cluster-local OCI registry mirror.
 
 This repository is part of Project Syn.
 For documentation on Project Syn and this component, see [syn.tools](https://syn.tools).

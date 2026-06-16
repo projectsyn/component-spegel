@@ -2,4 +2,18 @@ parameters:
   spegel:
     =_metadata:
       multi_tenant: true
-    namespace: syn-spegel
+    namespace:
+      name: syn-spegel
+      labels:
+        pod-security.kubernetes.io/enforce: privileged
+      annotations: {}
+
+    charts:
+      spegel:
+        source: oci://ghcr.io/spegel-org/helm-charts/spegel
+        version: 0.7.1
+
+    helm_values:
+      spegel:
+        registryFilters:
+          - .*:latest$

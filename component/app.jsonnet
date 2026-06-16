@@ -3,7 +3,7 @@ local inv = kap.inventory();
 local params = inv.parameters.spegel;
 local argocd = import 'lib/argocd.libjsonnet';
 
-local app = argocd.App('spegel', params.namespace);
+local app = argocd.App('spegel', params.namespace.name);
 
 local appPath =
   local project = std.get(std.get(app, 'spec', {}), 'project', 'syn');

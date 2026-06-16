@@ -5,15 +5,108 @@ The parent key for all of the following parameters is `spegel`.
 == `namespace`
 
 [horizontal]
+type:: dictionary
+default:: https://github.com/projectsyn/component-spegel/blob/master/class/defaults.yml[See `class/defaults.yml`]
+
+Configures the namespace in which to deploy this component.
+
+=== `namespace.name`
+
+[horizontal]
 type:: string
 default:: `syn-spegel`
 
-The namespace in which to deploy this component.
+The namespace name.
 
+=== `namespace.labels`
+
+[horizontal]
+type:: dictionary
+default:: `{pod-security.kubernetes.io/enforce: privileged}`
+
+Labels applied to the namespace.
+
+IMPORTANT: The Spegel DaemonSet mounts the node's containerd socket and registry configuration directory via `hostPath` volumes, which the `baseline` Pod Security Standard forbids.
+The default `privileged` enforce label is therefore required on clusters that enforce https://kubernetes.io/docs/concepts/security/pod-security-standards/[Pod Security Standards], otherwise the pods are rejected by the admission webhook.
+Keep this label (or label the namespace externally) when overriding `namespace.labels`.
+
+[source,yaml]
+----
+parameters:
+  spegel:
+    namespace:
+      labels:
+        pod-security.kubernetes.io/enforce: privileged
+----
+
+=== `namespace.annotations`
+
+[horizontal]
+type:: dictionary
+default:: `{}`
+
+Annotations applied to the namespace.
+
+== `charts`
+
+[horizontal]
+type:: dictionary
+default:: https://github.com/projectsyn/component-spegel/blob/master/class/defaults.yml[See `class/defaults.yml`]
+
+The Helm chart source and version for Spegel.
+The chart is pulled from the OCI registry `oci://ghcr.io/spegel-org/helm-charts/spegel`.
+
+== `helm_values`
+
+[horizontal]
+type:: dictionary
+default:: https://github.com/projectsyn/component-spegel/blob/master/class/defaults.yml[See `class/defaults.yml`]
+
+Values passed to the https://github.com/spegel-org/spegel/tree/main/charts/spegel[Spegel Helm chart].
+See the chart's https://github.com/spegel-org/spegel/blob/main/charts/spegel/values.yaml[`values.yaml`] for all available options.
+
+Mirror configuration is set directly through the chart's values:
+
+`spegel.mirroredRegistries`::
+Registries for which Spegel creates mirror configuration on the nodes.
+An empty list (the chart default) means all registries are mirrored.
+
+`spegel.registryFilters`::
+Regular expressions matching tags or registries that Spegel must not resolve through the peer mesh; their layers are still served from the local cluster cache.
+Defaults to `.*:latest$` so a mutable `:latest` tag isn't resolved to a digest already cached on a peer, which would make `imagePullPolicy: Always` serve a stale image instead of the newest push.
+Immutable tags are unaffected and keep using peer tag resolution.
+Entries set here merge with the default; prefix the key with `~` (`~registryFilters`) to replace the default list instead.
+
+`spegel.resolveTags`::
+Whether Spegel resolves tags through the peer mesh at all (chart default `true`).
+Set it to `false` to resolve every tag upstream instead of only those matched by `registryFilters`, which it supersedes; cf. the https://spegel.dev/docs/resolving-tags/#disable-tag-resolution[Spegel documentation].
+
+[source,yaml]
+----
+parameters:
+  spegel:
+    helm_values:
+      spegel:
+        mirroredRegistries:
+          - https://docker.io
+          - https://ghcr.io
+        ~registryFilters:
+          - ".*:dev$"
+          - ".*:snapshot$"
+----
+
+Make sure `spegel.containerdRegistryConfigPath` matches the containerd registry config path of the cluster's distribution.
+See the https://spegel.dev/docs/getting-started/#compatibility[Spegel compatibility documentation] for distribution-specific instructions.
 
 == Example
 
 [source,yaml]
 ----
-namespace: example-namespace
+parameters:
+  spegel:
+    helm_values:
+      spegel:
+        containerdRegistryConfigPath: /etc/cri/conf.d/hosts
+      serviceMonitor:
+        enabled: true
 ----

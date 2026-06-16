@@ -1,0 +1,12 @@
+# Test instance mirroring a Talos Linux cluster setup
+parameters:
+  spegel:
+    helm_values:
+      spegel:
+        containerdRegistryConfigPath: /etc/cri/conf.d/hosts
+        mirroredRegistries:
+          - https://docker.io
+          - https://ghcr.io
+        ~registryFilters:
+          - ".*:dev$"
+          - ".*:snapshot$"

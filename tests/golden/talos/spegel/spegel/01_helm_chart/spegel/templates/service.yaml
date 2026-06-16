@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/instance: spegel
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: spegel
+    app.kubernetes.io/version: v0.7.1
+    helm.sh/chart: spegel-0.7.1
+  name: spegel
+  namespace: syn-spegel
+spec:
+  ports:
+    - name: metrics
+      port: 9090
+      protocol: TCP
+      targetPort: metrics
+  selector:
+    app.kubernetes.io/component: spegel
+    app.kubernetes.io/instance: spegel
+    app.kubernetes.io/name: spegel
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.kubernetes.io/topology-mode: auto
+  labels:
+    app.kubernetes.io/instance: spegel
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: spegel
+    app.kubernetes.io/version: v0.7.1
+    helm.sh/chart: spegel-0.7.1
+  name: spegel-registry
+  namespace: syn-spegel
+spec:
+  ports:
+    - name: registry
+      nodePort: 30021
+      port: 5000
+      protocol: TCP
+      targetPort: registry
+  selector:
+    app.kubernetes.io/component: spegel
+    app.kubernetes.io/instance: spegel
+    app.kubernetes.io/name: spegel
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/instance: spegel
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: spegel
+    app.kubernetes.io/version: v0.7.1
+    helm.sh/chart: spegel-0.7.1
+  name: spegel-bootstrap
+  namespace: syn-spegel
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: true
+  selector:
+    app.kubernetes.io/component: spegel
+    app.kubernetes.io/instance: spegel
+    app.kubernetes.io/name: spegel
