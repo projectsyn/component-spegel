@@ -1,14 +1,12 @@
 # Test instance mirroring a Talos Linux cluster setup
 parameters:
   spegel:
-    namespace:
-      labels:
-        pod-security.kubernetes.io/enforce: privileged
-    mirrored_registries:
-      - https://docker.io
-      - https://ghcr.io
-    registry_filters:
-      - ".*:latest$"
     helm_values:
       spegel:
         containerdRegistryConfigPath: /etc/cri/conf.d/hosts
+        mirroredRegistries:
+          - https://docker.io
+          - https://ghcr.io
+        ~registryFilters:
+          - ".*:dev$"
+          - ".*:snapshot$"

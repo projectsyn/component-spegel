@@ -2,6 +2,7 @@
 
 spegel is a Commodore component to manage https://spegel.dev[Spegel], a stateless cluster-local OCI registry mirror.
 Spegel runs as a DaemonSet and lets nodes pull container images directly from each other, reducing external registry traffic and speeding up image pulls.
+See the https://spegel.dev/docs/architecture/[Spegel architecture docs] for details on how Spegel reuses each node's local containerd registry as a registry mirror from which other nodes can pull image layers.
 
 The component deploys Spegel via its https://github.com/spegel-org/spegel/tree/main/charts/spegel[Helm chart].
 

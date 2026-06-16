@@ -41,7 +41,8 @@ spec:
             - --bootstrap-kind=dns
             - --dns-bootstrap-domain=spegel-bootstrap.syn-spegel.svc.cluster.local.
             - --registry-filters
-            - .*:latest$
+            - .*:dev$
+            - .*:snapshot$
             - --containerd-content-path=/var/lib/containerd/io.containerd.content.v1.content
             - --debug-web-enabled=true
             - --data-dir=/var/lib/spegel

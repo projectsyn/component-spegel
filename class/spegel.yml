@@ -15,10 +15,6 @@ parameters:
           - ${_base_directory}/component/main.jsonnet
         input_type: jsonnet
         output_path: spegel/
-      # Spegel Helm chart. Hooks are skipped: the chart ships a post-delete
-      # cleanup DaemonSet which would remove the containerd mirror
-      # configuration from all nodes if it were deployed as a regular
-      # resource.
       - input_paths:
           - ${_base_directory}/helmcharts/spegel/${spegel:charts:spegel:version}
         input_type: helm
@@ -26,5 +22,4 @@ parameters:
         helm_params:
           name: spegel
           namespace: ${spegel:namespace:name}
-          no_hooks: true
         output_path: spegel/01_helm_chart
