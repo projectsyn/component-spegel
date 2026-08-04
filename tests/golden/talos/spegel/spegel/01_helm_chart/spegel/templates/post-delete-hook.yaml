@@ -10,8 +10,8 @@ metadata:
     app.kubernetes.io/instance: spegel
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: spegel
-    app.kubernetes.io/version: v0.7.1
-    helm.sh/chart: spegel-0.7.1
+    app.kubernetes.io/version: v0.7.4
+    helm.sh/chart: spegel-0.7.4
   name: spegel-cleanup
   namespace: syn-spegel
 spec:
@@ -38,8 +38,8 @@ metadata:
     app.kubernetes.io/instance: spegel
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: spegel
-    app.kubernetes.io/version: v0.7.1
-    helm.sh/chart: spegel-0.7.1
+    app.kubernetes.io/version: v0.7.4
+    helm.sh/chart: spegel-0.7.4
   name: spegel-cleanup
   namespace: syn-spegel
 spec:
@@ -60,7 +60,7 @@ spec:
             - cleanup
             - --containerd-registry-config-path=/etc/cri/conf.d/hosts
             - --addr=:8080
-          image: ghcr.io/spegel-org/spegel@sha256:bfb81b01f3cb0512044f7af2f8dd4aae9163ca36a35253a2d91c30c1b5dcf626
+          image: ghcr.io/spegel-org/spegel@sha256:26c60b05e08ac738e8442bc389c5780bff0e1d8153956e45d810a2f1008cf56f
           imagePullPolicy: IfNotPresent
           name: cleanup
           ports:
@@ -101,8 +101,8 @@ metadata:
     app.kubernetes.io/instance: spegel
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: spegel
-    app.kubernetes.io/version: v0.7.1
-    helm.sh/chart: spegel-0.7.1
+    app.kubernetes.io/version: v0.7.4
+    helm.sh/chart: spegel-0.7.4
   name: spegel-cleanup-wait
   namespace: syn-spegel
 spec:
@@ -110,7 +110,7 @@ spec:
     - args:
         - cleanup-wait
         - --probe-endpoint=spegel-cleanup.syn-spegel.svc.cluster.local.:8080
-      image: ghcr.io/spegel-org/spegel@sha256:bfb81b01f3cb0512044f7af2f8dd4aae9163ca36a35253a2d91c30c1b5dcf626
+      image: ghcr.io/spegel-org/spegel@sha256:26c60b05e08ac738e8442bc389c5780bff0e1d8153956e45d810a2f1008cf56f
       imagePullPolicy: IfNotPresent
       name: cleanup-wait
   restartPolicy: Never
