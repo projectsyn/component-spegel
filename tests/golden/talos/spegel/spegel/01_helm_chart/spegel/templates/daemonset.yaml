@@ -6,8 +6,8 @@ metadata:
     app.kubernetes.io/instance: spegel
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: spegel
-    app.kubernetes.io/version: v0.7.4
-    helm.sh/chart: spegel-0.7.4
+    app.kubernetes.io/version: v0.8.0
+    helm.sh/chart: spegel-0.8.0
   name: spegel
   namespace: syn-spegel
 spec:
@@ -38,6 +38,7 @@ spec:
             - https://ghcr.io
             - --containerd-sock=/run/containerd/containerd.sock
             - --containerd-namespace=k8s.io
+            - --containerd-registry-config-path=/etc/cri/conf.d/hosts
             - --bootstrap-kind=dns
             - --dns-bootstrap-domain=spegel-bootstrap.syn-spegel.svc.cluster.local.
             - --registry-filters
@@ -56,12 +57,11 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
-          image: ghcr.io/spegel-org/spegel@sha256:26c60b05e08ac738e8442bc389c5780bff0e1d8153956e45d810a2f1008cf56f
+          image: ghcr.io/spegel-org/spegel@sha256:b48194957bf9b5bdcea2700536a302ade23315082b05e5a44c0822f5c301850a
           imagePullPolicy: IfNotPresent
           name: registry
           ports:
             - containerPort: 5000
-              hostPort: 30020
               name: registry
               protocol: TCP
             - containerPort: 5001
@@ -108,7 +108,6 @@ spec:
             - https://ghcr.io
             - --mirror-targets
             - http://$(NODE_IP):30020
-            - http://$(NODE_IP):30021
             - --resolve-tags=true
             - --prepend-existing=false
           env:
@@ -116,7 +115,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
-          image: ghcr.io/spegel-org/spegel@sha256:26c60b05e08ac738e8442bc389c5780bff0e1d8153956e45d810a2f1008cf56f
+          image: ghcr.io/spegel-org/spegel@sha256:b48194957bf9b5bdcea2700536a302ade23315082b05e5a44c0822f5c301850a
           imagePullPolicy: IfNotPresent
           name: configuration
           resources:

@@ -6,8 +6,8 @@ metadata:
     app.kubernetes.io/instance: spegel
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: spegel
-    app.kubernetes.io/version: v0.7.4
-    helm.sh/chart: spegel-0.7.4
+    app.kubernetes.io/version: v0.8.0
+    helm.sh/chart: spegel-0.8.0
   name: spegel
   namespace: syn-spegel
 spec:
@@ -24,20 +24,18 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    service.kubernetes.io/topology-mode: auto
   labels:
     app.kubernetes.io/instance: spegel
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: spegel
-    app.kubernetes.io/version: v0.7.4
-    helm.sh/chart: spegel-0.7.4
+    app.kubernetes.io/version: v0.8.0
+    helm.sh/chart: spegel-0.8.0
   name: spegel-registry
   namespace: syn-spegel
 spec:
   ports:
     - name: registry
-      nodePort: 30021
+      nodePort: 30020
       port: 5000
       protocol: TCP
       targetPort: registry
@@ -45,6 +43,7 @@ spec:
     app.kubernetes.io/component: spegel
     app.kubernetes.io/instance: spegel
     app.kubernetes.io/name: spegel
+  trafficDistribution: PreferSameNode
   type: NodePort
 ---
 apiVersion: v1
@@ -54,8 +53,8 @@ metadata:
     app.kubernetes.io/instance: spegel
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: spegel
-    app.kubernetes.io/version: v0.7.4
-    helm.sh/chart: spegel-0.7.4
+    app.kubernetes.io/version: v0.8.0
+    helm.sh/chart: spegel-0.8.0
   name: spegel-bootstrap
   namespace: syn-spegel
 spec:
