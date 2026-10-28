@@ -10,8 +10,8 @@ metadata:
     app.kubernetes.io/instance: spegel
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: spegel
-    app.kubernetes.io/version: v0.7.4
-    helm.sh/chart: spegel-0.7.4
+    app.kubernetes.io/version: v0.8.1
+    helm.sh/chart: spegel-0.8.1
   name: spegel-cleanup
   namespace: syn-spegel
 spec:
@@ -38,8 +38,8 @@ metadata:
     app.kubernetes.io/instance: spegel
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: spegel
-    app.kubernetes.io/version: v0.7.4
-    helm.sh/chart: spegel-0.7.4
+    app.kubernetes.io/version: v0.8.1
+    helm.sh/chart: spegel-0.8.1
   name: spegel-cleanup
   namespace: syn-spegel
 spec:
@@ -60,7 +60,7 @@ spec:
             - cleanup
             - --containerd-registry-config-path=/etc/cri/conf.d/hosts
             - --addr=:8080
-          image: ghcr.io/spegel-org/spegel@sha256:26c60b05e08ac738e8442bc389c5780bff0e1d8153956e45d810a2f1008cf56f
+          image: ghcr.io/spegel-org/spegel@sha256:bdc1d14e4ab76e9a74520d331f485d09a596110118bd1a7706fa0411f17b3703
           imagePullPolicy: IfNotPresent
           name: cleanup
           ports:
@@ -71,6 +71,8 @@ spec:
             httpGet:
               path: /readyz
               port: readiness
+          securityContext:
+            readOnlyRootFilesystem: true
           volumeMounts:
             - mountPath: /etc/cri/conf.d/hosts
               name: containerd-config
@@ -101,8 +103,8 @@ metadata:
     app.kubernetes.io/instance: spegel
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: spegel
-    app.kubernetes.io/version: v0.7.4
-    helm.sh/chart: spegel-0.7.4
+    app.kubernetes.io/version: v0.8.1
+    helm.sh/chart: spegel-0.8.1
   name: spegel-cleanup-wait
   namespace: syn-spegel
 spec:
@@ -110,8 +112,18 @@ spec:
     - args:
         - cleanup-wait
         - --probe-endpoint=spegel-cleanup.syn-spegel.svc.cluster.local.:8080
-      image: ghcr.io/spegel-org/spegel@sha256:26c60b05e08ac738e8442bc389c5780bff0e1d8153956e45d810a2f1008cf56f
+      image: ghcr.io/spegel-org/spegel@sha256:bdc1d14e4ab76e9a74520d331f485d09a596110118bd1a7706fa0411f17b3703
       imagePullPolicy: IfNotPresent
       name: cleanup-wait
+      securityContext:
+        readOnlyRootFilesystem: true
   restartPolicy: Never
+  securityContext: {}
   terminationGracePeriodSeconds: 0
+  tolerations:
+    - key: CriticalAddonsOnly
+      operator: Exists
+    - effect: NoExecute
+      operator: Exists
+    - effect: NoSchedule
+      operator: Exists
